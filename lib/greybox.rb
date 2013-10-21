@@ -6,6 +6,7 @@ module Greybox
     def setup(&blk)
       config(&blk)
       run
+      check
     end
 
     def config
@@ -25,6 +26,18 @@ module Greybox
         expected = File.read(expected_filename)
         check_output(input, actual, expected)
       end
+    end
+
+    def check
+      failures.each do |file, values|
+        puts "FAILURE:"
+        puts "For file #{file}:"
+        puts "Expected:"
+        puts values[:expected]
+        puts "Actual:"
+        puts values[:actual]
+      end
+      exit 1 unless failures.empty?
     end
 
     def check_output(input_file, actual, expected)
