@@ -7,6 +7,7 @@ module Greybox
       config(&blk)
       run
     end
+
     def config
       @c = Configuration.new
       yield @c
@@ -33,7 +34,13 @@ module Greybox
     end
 
     def files
-      input_files.map { |input| [input, @c[:expected].call(input)] }
+      result = input_files.map { |input| [input, @c[:expected].call(input)] }
+      result.each do |input_file, output_file|
+        if input_file == output_file
+          raise "input file for #{input_file} is the same as the output file"
+        end
+      end
+      result
     end
 
     def input_files

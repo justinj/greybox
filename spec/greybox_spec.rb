@@ -35,6 +35,15 @@ module Greybox
         ]
       end
 
+      it "complains if the output for a file is the same as the input" do
+        Greybox.config do |c|
+          c.input "*.input"
+          c.expected ->(input) { input }
+        end
+
+        ->() { Greybox.files }.must_raise RuntimeError
+      end
+
       it "changes .input to .output if no procedure is given" do
         Greybox.config do |c|
           c.input "*.input"
@@ -111,7 +120,7 @@ module Greybox
         end
 
         Greybox.run
-        FakeFS.deactivate!
+        FakeFS.deactivate! # minitest uses the file system for diffs
         Greybox.failures.must_equal [
           ["file1.input", { expected: "foo\n", actual: "bar\n" }]
         ]
