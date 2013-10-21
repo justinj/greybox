@@ -5,7 +5,7 @@ module Greybox
 
       FileUtils.touch "file1.input"
       FileUtils.touch "file2.input"
-      FileUtils.touch "file3.input"
+      FileUtils.touch "input.input"
     end
 
     after do
@@ -19,7 +19,7 @@ module Greybox
         Greybox.config do |c|
           c.input "*.input"
         end
-        Greybox.input_files.must_equal %w(file1.input file2.input file3.input)
+        Greybox.input_files.must_equal %w(file1.input file2.input input.input)
       end
 
       it "uses the provided function to figure out the expected name" do
@@ -31,11 +31,11 @@ module Greybox
         Greybox.files.must_equal [
           ["file1.input", "file1.outputfile"],
           ["file2.input", "file2.outputfile"],
-          ["file3.input", "file3.outputfile"],
+          ["input.input", "input.outputfile"],
         ]
       end
 
-      it "just replaces any occurrence of input with output if no procedure is given" do
+      it "changes .input to .output if no procedure is given" do
         Greybox.config do |c|
           c.input "*.input"
         end
@@ -43,7 +43,7 @@ module Greybox
         Greybox.files.must_equal [
           ["file1.input", "file1.output"],
           ["file2.input", "file2.output"],
-          ["file3.input", "file3.output"],
+          ["input.input", "input.output"],
         ]
       end
     end
@@ -52,7 +52,7 @@ module Greybox
       it "uses the provided test command" do
         FileUtils.touch "file1.output"
         FileUtils.touch "file2.output"
-        FileUtils.touch "file3.output"
+        FileUtils.touch "input.output"
 
         Greybox.config do |c|
           c.input "*.input"
@@ -62,14 +62,14 @@ module Greybox
 
         Greybox.expects(:`).with("run file1.input")
         Greybox.expects(:`).with("run file2.input")
-        Greybox.expects(:`).with("run file3.input")
+        Greybox.expects(:`).with("run input.input")
 
         Greybox.run
       end
 
       it "uses the provided blackbox command to find the expected value for cases that don't have one yet" do
         FileUtils.rm "file2.input"
-        FileUtils.rm "file3.input"
+        FileUtils.rm "input.input"
         Greybox.expects(:`).with("cat < file1.input")
         Greybox.expects(:`).with("echo Hello")
 
@@ -88,7 +88,7 @@ module Greybox
         File.open("file1.input", 'w') { |f| f.write "input" }
         File.open("file1.output", 'w') { |f| f.write "output\n" }
         FileUtils.rm "file2.input"
-        FileUtils.rm "file3.input"
+        FileUtils.rm "input.input"
 
         Greybox.config do |c|
           c.input "*.input"
@@ -103,7 +103,7 @@ module Greybox
         File.open("file1.input", 'w') { |f| f.write "input" }
         File.open("file1.output", 'w') { |f| f.write "foo\n" }
         FileUtils.rm "file2.input"
-        FileUtils.rm "file3.input"
+        FileUtils.rm "input.input"
 
         Greybox.config do |c|
           c.input "*.input"

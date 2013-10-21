@@ -57,7 +57,7 @@ module Greybox
 
     def get_default(property)
       {
-        expected: ->(input) { input.gsub("input", "output") }
+        expected: ->(input) { input.gsub(/\.input$/, ".output") }
       }[property] or raise "Property #{property} was not set in Greybox config"
     end
 
