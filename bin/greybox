@@ -2,4 +2,4 @@
 
 require "greybox"
 
-puts "poo"
+load Dir.pwd + "/Greyfile"

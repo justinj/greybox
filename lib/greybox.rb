@@ -2,17 +2,33 @@ require "greybox/version"
 
 module Greybox
   class << self
+    attr_reader :failures
+    def setup(&blk)
+      config(&blk)
+      run
+    end
     def config
       @c = Configuration.new
       yield @c
     end
 
     def run
-      files.each do |input, expected|
-        unless File.exist?(expected)
-          system(@c[:blackbox].gsub("%", input) + " > #{expected}")
+      @failures = []
+      files.each do |input, expected_filename|
+        unless File.exist?(expected_filename)
+          File.open expected_filename, 'w' do |f|
+            f.write `#{@c[:blackbox].gsub("%", input)}`
+          end
         end
-        system(@c[:test_command].gsub("%", input))
+        actual = `#{@c[:test_command].gsub("%", input)}`
+        expected = File.read(expected_filename)
+        check_output(input, actual, expected)
+      end
+    end
+
+    def check_output(input_file, actual, expected)
+      if actual != expected
+        @failures << [input_file, { expected: expected, actual: actual }]
       end
     end
 
