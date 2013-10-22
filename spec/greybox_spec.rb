@@ -93,15 +93,16 @@ module Greybox
     end
 
     describe "asserting output" do
-      it "has no complaints if the output is the same as the expected" do
+      before do
         File.open("file1.input", 'w') { |f| f.write "input" }
-        File.open("file1.output", 'w') { |f| f.write "output\n" }
+        File.open("file1.output", 'w') { |f| f.write "foo\n" }
         FileUtils.rm "file2.input"
         FileUtils.rm "input.input"
-
+      end
+      it "has no complaints if the output is the same as the expected" do
         Greybox.config do |c|
           c.input "*.input"
-          c.test_command "echo output"
+          c.test_command "echo foo"
         end
 
         Greybox.run
@@ -109,11 +110,6 @@ module Greybox
       end
 
       it "complains if the output is different" do
-        File.open("file1.input", 'w') { |f| f.write "input" }
-        File.open("file1.output", 'w') { |f| f.write "foo\n" }
-        FileUtils.rm "file2.input"
-        FileUtils.rm "input.input"
-
         Greybox.config do |c|
           c.input "*.input"
           c.test_command "echo bar"
@@ -125,6 +121,17 @@ module Greybox
           ["file1.input", { expected: "foo\n", actual: "bar\n" }]
         ]
         FakeFS.activate!
+      end
+
+      it "uses the custom comparer if one is provided" do
+        Greybox.config do |c|
+          c.input "*.input"
+          c.test_command "echo f"
+          c.comparison ->(actual, expected) { expected.include? actual[0] }
+        end
+
+        Greybox.run
+        Greybox.failures.must_be :empty?
       end
     end
   end

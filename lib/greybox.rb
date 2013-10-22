@@ -1,7 +1,10 @@
 require "greybox/version"
+require "minitest"
 
 module Greybox
   class << self
+    include Minitest::Assertions
+
     attr_reader :failures
     def setup(&blk)
       config(&blk)
@@ -32,16 +35,18 @@ module Greybox
       failures.each do |file, values|
         puts "FAILURE:"
         puts "For file #{file}:"
-        puts "Expected:"
-        puts values[:expected]
-        puts "Actual:"
-        puts values[:actual]
+        puts diff(values[:expected], values[:actual])
       end
-      exit 1 unless failures.empty?
+      if failures.empty?
+        puts "All tests passed."
+      else
+        puts "="*10
+        exit 1
+      end
     end
 
     def check_output(input_file, actual, expected)
-      if actual != expected
+      unless @c[:comparison].call(actual, expected)
         @failures << [input_file, { expected: expected, actual: actual }]
       end
     end
@@ -77,7 +82,8 @@ module Greybox
 
     def get_default(property)
       {
-        expected: ->(input) { input.gsub(/\.input$/, ".output") }
+        expected: ->(input) { input.gsub(/\.input$/, ".output") },
+        comparison: ->(actual, expected) { actual == expected },
       }[property] or raise "Property #{property} was not set in Greybox config"
     end
 
@@ -86,6 +92,7 @@ module Greybox
       expected
       test_command
       blackbox
+      comparison
     )
 
     def method_missing(name, *args)
