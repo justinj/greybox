@@ -35,16 +35,15 @@ module Greybox
       private
       def new_blank_properties_module
         Module.new do
-          def self.to_s
-            "Properties(#{properties.join(", ")})"
-          end
+          class << self
+            def to_s
+              "Properties(#{properties.join(", ")})"
+            end
+            alias_method :inspect, :to_s
 
-          def self.inspect
-            self.to_s
-          end
-
-          def self.properties
-            instance_methods(false).reject { |m| m.to_s.end_with? "=" }
+            def properties
+              instance_methods(false).reject { |m| m.to_s.end_with? "=" }
+            end
           end
         end
       end
