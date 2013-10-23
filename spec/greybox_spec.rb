@@ -18,12 +18,14 @@ module Greybox
       it "uses the glob given for test files" do
         Greybox.config do |c|
           c.input = "*.input"
+          c.test_command = ""
         end
         Greybox.input_files.must_equal %w(file1.input file2.input input.input)
       end
 
       it "uses the provided function to figure out the expected name" do
         Greybox.config do |c|
+          c.test_command = ""
           c.input = "*.input"
           c.expected = ->(input) { input.gsub(/\.input$/, ".outputfile") }
         end
@@ -37,6 +39,7 @@ module Greybox
 
       it "complains if the output for a file is the same as the input" do
         Greybox.config do |c|
+          c.test_command = ""
           c.input = "*.input"
           c.expected = ->(input) { input }
         end
@@ -46,6 +49,7 @@ module Greybox
 
       it "changes .input to .output if no procedure is given" do
         Greybox.config do |c|
+          c.test_command = ""
           c.input = "*.input"
         end
 

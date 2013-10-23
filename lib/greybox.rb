@@ -1,5 +1,6 @@
 require "greybox/version"
 require "greybox/configurable"
+require "greybox/configuration"
 require "minitest"
 require "set"
 
@@ -67,16 +68,5 @@ module Greybox
     def input_files
       Dir.glob @c.input
     end
-  end
-
-  class Configuration
-    include Configurable
-
-    def_property :input, required: true
-    def_property :expected, default: ->(input) { input.gsub(/\.input$/, ".output") }
-    def_property :comparison, default: ->(actual, expected) { actual == expected }
-    def_property :test_command
-    def_property :blackbox
-
   end
 end
