@@ -22,7 +22,7 @@ A `Greyfile` might look like this:
 ```ruby
 Greybox.setup do |c|
   c.test_command = "./my_test_command < %"
-  c.blackbox_command = "./blackbox < %"
+  c.blackbox_command = "./blackbox_command < %"
   c.input = "test/*.input"
 end
 ```
