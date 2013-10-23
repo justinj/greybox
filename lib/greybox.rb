@@ -36,23 +36,34 @@ module Greybox
     end
 
     def check
-      failures.each do |file, values|
-        puts "="*10
-        puts "FAILURE:"
-        puts "For file #{file}:"
-        puts diff(values[:expected], values[:actual])
-      end
+      failures.each { |failure| display_failure(failure) }
+
       if failures.empty?
-        puts "All #{files.count} tests passed."
+        all_passed
       else
-        puts "="*10
-        puts "The following tests failed:"
-        failures.each do |file, _|
-          puts file
-        end
-        puts "#{files.count - failures.count}/#{files.count} tests passed"
-        exit 1
+        some_failures
       end
+    end
+
+    def display_failure((file, values))
+      puts "="*10
+      puts "FAILURE:"
+      puts "For file #{file}:"
+      puts diff(values[:expected], values[:actual])
+    end
+
+    def some_failures
+      puts "="*10
+      puts "The following tests failed:"
+      failures.each do |file, _|
+        puts file
+      end
+      puts "#{files.count - failures.count}/#{files.count} tests passed"
+      exit 1
+    end
+
+    def all_passed
+      puts "All #{files.count} tests passed."
     end
 
     def check_output(input_file, actual, expected)
