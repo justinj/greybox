@@ -1,6 +1,7 @@
 require "greybox/version"
 require "greybox/configurable"
 require "minitest"
+require "set"
 
 module Greybox
   class << self
@@ -16,6 +17,7 @@ module Greybox
     def config
       @c = Configuration.new
       yield @c
+      @c.verify
     end
 
     def run
@@ -70,7 +72,7 @@ module Greybox
   class Configuration
     include Configurable
 
-    def_property :input
+    def_property :input, required: true
     def_property :expected, default: ->(input) { input.gsub(/\.input$/, ".output") }
     def_property :comparison, default: ->(actual, expected) { actual == expected }
     def_property :test_command
