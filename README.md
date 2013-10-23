@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/justinj/greybox.png)](https://codeclimate.com/github/justinj/greybox)
+
 # Greybox
 
 Test a CLI program against a black box.
