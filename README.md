@@ -29,7 +29,7 @@ This defines a testing setup in which the command
     $ ./blackbox < INPUT_FILE.input
 
 is used as the reference for correctness.
-`%` denotes there the input file will be placed.
+`%` denotes where the input file will be placed.
 
     $ ./my_test_command < INPUT_FILE.input
 
