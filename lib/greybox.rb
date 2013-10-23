@@ -26,7 +26,7 @@ module Greybox
       files.each do |input, expected_filename|
         unless File.exist?(expected_filename)
           File.open expected_filename, 'w' do |f|
-            f.write `#{@c.blackbox.gsub("%", input)}`
+            f.write `#{@c.blackbox_command.gsub("%", input)}`
           end
         end
         actual = `#{@c.test_command.gsub("%", input)}`

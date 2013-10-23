@@ -70,7 +70,7 @@ module Greybox
         Greybox.config do |c|
           c.input = "*.input"
           c.test_command = "run %"
-          c.blackbox = "cat < %"
+          c.blackbox_command = "cat < %"
         end
 
         Greybox.expects(:`).with("run file1.input")
@@ -89,7 +89,7 @@ module Greybox
         Greybox.config do |c|
           c.input = "*.input"
           c.test_command = "echo Hello"
-          c.blackbox = "cat < %"
+          c.blackbox_command = "cat < %"
         end
 
         Greybox.run

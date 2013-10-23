@@ -22,14 +22,14 @@ A `Greyfile` might look like this:
 ```ruby
 Greybox.setup do |c|
   c.test_command = "./my_test_command < %"
-  c.blackbox = "./blackbox < %"
+  c.blackbox_command = "./blackbox < %"
   c.input = "test/*.input"
 end
 ```
 
 This defines a testing setup in which the command
     
-    $ ./blackbox < INPUT_FILE.input
+    $ ./blackbox_command < INPUT_FILE.input
 
 is used as the reference for correctness.
 `%` denotes where the input file will be placed.
@@ -50,7 +50,7 @@ As a more complete example, here is a Greyfile I used for a school project:
 ```ruby
 Greybox.setup do |c|
   c.test_command = "racket wlppscan.ss < % 2>&1"
-  c.blackbox = "ssh school 'java cs241.WLPPScan' < % 2>&1"
+  c.blackbox_command = "ssh school 'java cs241.WLPPScan' < % 2>&1"
   c.input = "test/*.input"
 
   # if the expected ERRORs, all we care about is that
@@ -66,7 +66,7 @@ end
 ```
 
 The `test_command` specifies how to run _my_ version of the program, a racket program.
-`blackbox` specifies how to generate the expected output for a specific test case.
+`blackbox_command` specifies how to generate the expected output for a specific test case.
 
 `comparison` specifies how the output of `test_command` should be compared to the black box output.
 In this case, if part of the output contains `ERROR`, all we care about is that the actual output contains `ERROR` as well.

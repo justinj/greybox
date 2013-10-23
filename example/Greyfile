@@ -1,5 +1,5 @@
 Greybox.setup do |c|
   c.input "test/*.input" 
-  c.blackbox "cat < %"
+  c.blackbox_command "cat < %"
   c.test_command "cat < %"
 end
