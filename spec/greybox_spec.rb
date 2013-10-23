@@ -17,15 +17,15 @@ module Greybox
     describe "finding files" do
       it "uses the glob given for test files" do
         Greybox.config do |c|
-          c.input "*.input"
+          c.input = "*.input"
         end
         Greybox.input_files.must_equal %w(file1.input file2.input input.input)
       end
 
       it "uses the provided function to figure out the expected name" do
         Greybox.config do |c|
-          c.input "*.input"
-          c.expected ->(input) { input.gsub(/\.input$/, ".outputfile") }
+          c.input = "*.input"
+          c.expected = ->(input) { input.gsub(/\.input$/, ".outputfile") }
         end
 
         Greybox.files.must_equal [
@@ -37,8 +37,8 @@ module Greybox
 
       it "complains if the output for a file is the same as the input" do
         Greybox.config do |c|
-          c.input "*.input"
-          c.expected ->(input) { input }
+          c.input = "*.input"
+          c.expected = ->(input) { input }
         end
 
         ->() { Greybox.files }.must_raise RuntimeError
@@ -46,7 +46,7 @@ module Greybox
 
       it "changes .input to .output if no procedure is given" do
         Greybox.config do |c|
-          c.input "*.input"
+          c.input = "*.input"
         end
 
         Greybox.files.must_equal [
@@ -64,9 +64,9 @@ module Greybox
         FileUtils.touch "input.output"
 
         Greybox.config do |c|
-          c.input "*.input"
-          c.test_command "run %"
-          c.blackbox "cat < %"
+          c.input = "*.input"
+          c.test_command = "run %"
+          c.blackbox = "cat < %"
         end
 
         Greybox.expects(:`).with("run file1.input")
@@ -83,9 +83,9 @@ module Greybox
         Greybox.expects(:`).with("echo Hello")
 
         Greybox.config do |c|
-          c.input "*.input"
-          c.test_command "echo Hello"
-          c.blackbox "cat < %"
+          c.input = "*.input"
+          c.test_command = "echo Hello"
+          c.blackbox = "cat < %"
         end
 
         Greybox.run
@@ -101,8 +101,8 @@ module Greybox
       end
       it "has no complaints if the output is the same as the expected" do
         Greybox.config do |c|
-          c.input "*.input"
-          c.test_command "echo foo"
+          c.input = "*.input"
+          c.test_command = "echo foo"
         end
 
         Greybox.run
@@ -111,8 +111,8 @@ module Greybox
 
       it "complains if the output is different" do
         Greybox.config do |c|
-          c.input "*.input"
-          c.test_command "echo bar"
+          c.input = "*.input"
+          c.test_command = "echo bar"
         end
 
         Greybox.run
@@ -125,9 +125,9 @@ module Greybox
 
       it "uses the custom comparer if one is provided" do
         Greybox.config do |c|
-          c.input "*.input"
-          c.test_command "echo f"
-          c.comparison ->(actual, expected) { expected.include? actual[0] }
+          c.input = "*.input"
+          c.test_command = "echo f"
+          c.comparison = ->(actual, expected) { expected.include? actual[0] }
         end
 
         Greybox.run

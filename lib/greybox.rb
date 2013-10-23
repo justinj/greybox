@@ -1,4 +1,5 @@
 require "greybox/version"
+require "greybox/configurable"
 require "minitest"
 
 module Greybox
@@ -22,10 +23,10 @@ module Greybox
       files.each do |input, expected_filename|
         unless File.exist?(expected_filename)
           File.open expected_filename, 'w' do |f|
-            f.write `#{@c[:blackbox].gsub("%", input)}`
+            f.write `#{@c.blackbox.gsub("%", input)}`
           end
         end
-        actual = `#{@c[:test_command].gsub("%", input)}`
+        actual = `#{@c.test_command.gsub("%", input)}`
         expected = File.read(expected_filename)
         check_output(input, actual, expected)
       end
@@ -46,13 +47,13 @@ module Greybox
     end
 
     def check_output(input_file, actual, expected)
-      unless @c[:comparison].call(actual, expected)
+      unless @c.comparison.call(actual, expected)
         @failures << [input_file, { expected: expected, actual: actual }]
       end
     end
 
     def files
-      result = input_files.map { |input| [input, @c[:expected].call(input)] }
+      result = input_files.map { |input| [input, @c.expected.call(input)] }
       result.each do |input_file, output_file|
         if input_file == output_file
           raise "input file for #{input_file} is the same as the output file"
@@ -62,45 +63,18 @@ module Greybox
     end
 
     def input_files
-      Dir.glob @c[:input]
+      Dir.glob @c.input
     end
   end
 
   class Configuration
-    attr_accessor :properties
-    def initialize
-      @properties = {}
-    end
+    include Configurable
 
-    def [](val)
-      if properties.has_key? val
-        properties[val]
-      else
-        get_default(val)
-      end
-    end
+    def_property :input
+    def_property :expected, default: ->(input) { input.gsub(/\.input$/, ".output") }
+    def_property :comparison, default: ->(actual, expected) { actual == expected }
+    def_property :test_command
+    def_property :blackbox
 
-    def get_default(property)
-      {
-        expected: ->(input) { input.gsub(/\.input$/, ".output") },
-        comparison: ->(actual, expected) { actual == expected },
-      }[property] or raise "Property #{property} was not set in Greybox config"
-    end
-
-    MESSAGES = %w(
-      input
-      expected
-      test_command
-      blackbox
-      comparison
-    )
-
-    def method_missing(name, *args)
-      if MESSAGES.include? name.to_s 
-        properties[name] = args.first
-      else
-        raise %("#{name}" is not a valid Greybox property.)
-      end
-    end
   end
 end
