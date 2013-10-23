@@ -37,14 +37,20 @@ module Greybox
 
     def check
       failures.each do |file, values|
+        puts "="*10
         puts "FAILURE:"
         puts "For file #{file}:"
         puts diff(values[:expected], values[:actual])
       end
       if failures.empty?
-        puts "All tests passed."
+        puts "All #{files.count} tests passed."
       else
         puts "="*10
+        puts "The following tests failed:"
+        failures.each do |file, _|
+          puts file
+        end
+        puts "#{files.count - failures.count}/#{files.count} tests passed"
         exit 1
       end
     end
