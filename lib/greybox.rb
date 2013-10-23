@@ -1,4 +1,3 @@
-require "minitest"
 require "set"
 require "greybox/version"
 require "greybox/configurable"
@@ -6,8 +5,6 @@ require "greybox/configuration"
 
 module Greybox
   class << self
-    include Minitest::Assertions
-
     attr_reader :failures
     def setup(&blk)
       config(&blk)

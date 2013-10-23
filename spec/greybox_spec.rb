@@ -110,7 +110,7 @@ module Greybox
         end
 
         Greybox.run
-        Greybox.failures.must_be :empty?
+        Greybox.failures.must_be_empty
       end
 
       it "complains if the output is different" do
@@ -135,7 +135,7 @@ module Greybox
         end
 
         Greybox.run
-        Greybox.failures.must_be :empty?
+        Greybox.failures.must_be_empty
       end
     end
 
