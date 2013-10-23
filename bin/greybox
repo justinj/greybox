@@ -2,4 +2,8 @@
 
 require "greybox"
 
-load Dir.pwd + "/Greyfile"
+begin
+  load Dir.pwd + "/Greyfile"
+rescue LoadError
+  puts "Could not load Greyfile"
+end
