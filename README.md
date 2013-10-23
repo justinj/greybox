@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/justinj/greybox.png?branch=master)](https://travis-ci.org/justinj/greybox)
 [![Code Climate](https://codeclimate.com/github/justinj/greybox.png)](https://codeclimate.com/github/justinj/greybox)
 
 # Greybox
