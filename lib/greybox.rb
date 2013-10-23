@@ -49,7 +49,7 @@ module Greybox
       puts "="*10
       puts "FAILURE:"
       puts "For file #{file}:"
-      puts diff(values[:expected], values[:actual])
+      puts Diffy::Diff.new(values[:expected], values[:actual])
     end
 
     def some_failures
