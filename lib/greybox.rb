@@ -1,8 +1,8 @@
+require "minitest"
+require "set"
 require "greybox/version"
 require "greybox/configurable"
 require "greybox/configuration"
-require "minitest"
-require "set"
 
 module Greybox
   class << self
