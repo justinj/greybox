@@ -33,7 +33,11 @@ is used as the reference for correctness.
 
     $ ./my_test_command < INPUT_FILE.input
 
-is verified to match the blackbox output on every run.
+is verified to match the blackbox output every time
+
+    $ greybox
+
+is run.
 
 The expected results will be stored in `INPUT_FILE.output`.
 This is the default behaviour but can be changed.
