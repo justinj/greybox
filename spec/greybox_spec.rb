@@ -30,11 +30,7 @@ module Greybox
           c.expected = ->(input) { input.gsub(/\.input$/, ".outputfile") }
         end
 
-        Greybox.files.must_equal [
-          ["file1.input", "file1.outputfile"],
-          ["file2.input", "file2.outputfile"],
-          ["input.input", "input.outputfile"],
-        ]
+        Greybox.output_filename("file1.input").must_equal "file1.outputfile"
       end
 
       it "complains if the output for a file is the same as the input" do
@@ -44,7 +40,7 @@ module Greybox
           c.expected = ->(input) { input }
         end
 
-        ->() { Greybox.files }.must_raise RuntimeError
+        ->() { Greybox.output_filename("input.input") }.must_raise RuntimeError
       end
 
       it "changes .input to .output if no procedure is given" do
@@ -53,11 +49,7 @@ module Greybox
           c.input = "*.input"
         end
 
-        Greybox.files.must_equal [
-          ["file1.input", "file1.output"],
-          ["file2.input", "file2.output"],
-          ["input.input", "input.output"],
-        ]
+        Greybox.output_filename("input.input").must_equal "input.output"
       end
     end
 
