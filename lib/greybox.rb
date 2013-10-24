@@ -26,6 +26,7 @@ module Greybox
         expected = expectation(input)
         check_output(input, actual, expected)
       end
+      puts
     end
 
     def expectation(input_filename)
@@ -43,24 +44,29 @@ module Greybox
       if failures.empty?
         all_passed
       else
-        some_failures
+        some_failures(failures)
       end
     end
 
+    def separator
+      "=========="
+    end
+
     def display_failure((file, values))
-      puts "="*10
+      puts separator
       puts "FAILURE:"
       puts "For file #{file}:"
       puts Diffy::Diff.new(values[:expected], values[:actual])
     end
 
-    def some_failures
-      puts "="*10
+    def some_failures(failures)
+      puts separator
       puts "The following tests failed:"
       failures.each do |file, _|
-        puts file
+        puts "  - #{file}"
       end
-      puts "#{input_files.count - failures.count}/#{input_files.count} tests passed"
+      passes = input_files.count - failures.count
+      puts "#{passes}/#{input_files.count} tests passed"
       exit 1
     end
 
@@ -69,7 +75,10 @@ module Greybox
     end
 
     def check_output(input_file, actual, expected)
-      unless configuration.comparison.call(actual, expected)
+      if configuration.comparison.call(actual, expected)
+        print "."
+      else
+        print "F"
         @failures << [input_file, { expected: expected, actual: actual }]
       end
     end
