@@ -12,6 +12,8 @@ Since these might be slow, or even over an ssh connection, it will store the res
 
 ## Installation
 
+Only Ruby 1.9.3 and 2.0.0 are supported.
+
     $ gem install greybox
 
 ## Usage
