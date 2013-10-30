@@ -1,3 +1,0 @@
-Greybox.setup do |c|
-  c.input "test/*.input"
-end
