@@ -3,7 +3,6 @@ module Greybox
     attr_accessor :properties
 
     module ClassMethods
-      attr_accessor :defaults
       attr_accessor :required_properties
       def def_property(name, args = {})
         setter = "#{name}=".to_sym
@@ -30,6 +29,10 @@ module Greybox
         }
 
         include mod
+      end
+
+      def defaults
+        @defaults || {}
       end
 
       private
