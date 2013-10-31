@@ -53,7 +53,7 @@ module Greybox
     end
 
     def get_prop(prop)
-      (@properties || {}).fetch(prop, self.class.defaults[prop]) 
+      (@properties || {}).fetch(prop, self.class.defaults[prop])
     end
 
     def verify
