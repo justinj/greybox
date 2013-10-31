@@ -7,6 +7,7 @@ module Greybox
       @config = config
       @failures = []
     end
+
     def files
       Dir.glob(config.input)
     end
@@ -19,8 +20,10 @@ module Greybox
 
     def expected_for(filename)
       file = expected_filename(filename)
-      File.open(file, 'w') do |f|
-        f.write run_command(config.blackbox_command, filename)
+      unless File.exist?(file)
+        File.open(file, 'w') do |f|
+          f.write run_command(config.blackbox_command, filename)
+        end
       end
       File.read(file)
     end

@@ -72,6 +72,14 @@ module Greybox
         runner.run
       end
 
+      it "does not run the command if the file already exists" do
+        with_config(test_command: "echo hi",
+                    blackbox_command: "echo output")
+        FileUtils.touch("output_file")
+        runner.expects(:`).with "echo hi"
+        runner.run
+      end
+
       it "inserts output filenames for %'s in the blackbox command" do
         with_config(test_command: "echo hi",
                     blackbox_command: "echo output < %")
