@@ -30,7 +30,7 @@ end
 ```
 
 This defines a testing setup in which the command
-    
+
     $ ./blackbox_command < INPUT_FILE.input
 
 is used as the reference for correctness.
