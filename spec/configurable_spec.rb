@@ -5,6 +5,18 @@ module Greybox
       @config ||= configuration_class.new
     end
 
+    describe "the inserted module" do
+      it "shows what properties have been defined" do
+        cls = Class.new do
+          include Configurable
+
+          def_property :some_property
+          def_property :some_other_property
+        end
+        cls.ancestors.map(&:to_s).must_include "Properties(some_property, some_other_property)"
+      end
+    end
+
     describe "setting a property" do
       def configuration_class
         Class.new do
