@@ -20,6 +20,7 @@ module Greybox
         input: "*.input",
         expected: ->(input) { "output_file" },
         blackbox_command: "echo BLACKBOX_COMMAND",
+        test_command: "echo hi",
         comparison: ->(actual, expected) { actual == expected },
       }
     end
@@ -65,24 +66,32 @@ module Greybox
       end
 
       it "uses the provided blackbox command to find the expected value for cases that don't have one yet" do
-        with_config(test_command: "echo hi",
-                    blackbox_command: "echo output")
+        with_config(blackbox_command: "echo output")
         runner.expects(:`).with "echo hi"
         runner.expects(:`).with "echo output"
         runner.run
       end
 
       it "does not run the command if the file already exists" do
-        with_config(test_command: "echo hi",
-                    blackbox_command: "echo output")
+        with_config(blackbox_command: "echo output")
         FileUtils.touch("output_file")
         runner.expects(:`).with "echo hi"
         runner.run
       end
 
+      it "complains if there is no blackbox_command AND the file does not exist" do
+        with_config(blackbox_command: nil)
+        -> { runner.run }.must_raise RuntimeError
+      end
+
+      it "does not complain if there is no blackbox_command and the file DOES exist" do
+        with_config(blackbox_command: nil)
+        FileUtils.touch("output_file")
+        runner.run
+      end
+
       it "inserts output filenames for %'s in the blackbox command" do
-        with_config(test_command: "echo hi",
-                    blackbox_command: "echo output < %")
+        with_config(blackbox_command: "echo output < %")
         runner.expects(:`).with "echo hi"
         runner.expects(:`).with "echo output < inputfile.input"
         runner.run
@@ -91,22 +100,19 @@ module Greybox
 
     describe "asserting output" do
       it "compares for equality by default" do
-        with_config(test_command: "echo hi",
-                    blackbox_command: "echo hi")
+        with_config(blackbox_command: "echo hi")
         runner.run
         runner.failures.must_be_empty
       end
 
       it "has a failure if a test fails" do
-        with_config(test_command: "echo hi",
-                    blackbox_command: "echo hello")
+        with_config(blackbox_command: "echo hello")
         runner.run
         runner.failures.wont_be_empty
       end
 
       it "compares by the provided comparison" do
         with_config(comparison: ->(actual, expected) { actual == "hi\n" },
-                    test_command: "echo hi",
                     blackbox_command: "echo hello")
         runner.run
         runner.failures.must_be_empty

@@ -21,6 +21,7 @@ module Greybox
     def expected_for(filename)
       file = expected_filename(filename)
       unless File.exist?(file)
+        raise "No blackbox_command available to generate #{file}" unless config.blackbox_command
         File.open(file, 'w') do |f|
           f.write run_command(config.blackbox_command, filename)
         end
